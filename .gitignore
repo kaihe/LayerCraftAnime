@@ -1,0 +1,12 @@
+.vscode
+
+data/*
+out/*
+pretrained_model/*
+train_results/*
+trained_models/*
+*.pyc
+lightning_logs/*
+*.jsonl
+*.json
+*.png
