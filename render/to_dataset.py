@@ -27,7 +27,7 @@ def to_dataset(file_name):
     split = 0.8
     samples = []
     with open(os.path.join(result_dir, file_name)) as fin:
-        for line in fin.readlines():
+        for line in tqdm(fin.readlines()):
             data = json.loads(line.strip())
             base_im, result_im = render_image(data['pid'], data['cp_combo'], data['all_combo'])
 
@@ -43,15 +43,15 @@ def to_dataset(file_name):
     train_samples = samples[:int(len(samples)*split)]
     test_samples = samples[int(len(samples)*split):]
 
-    with open(os.path.join(dataset_dir, 'labels_train.jsonl'), 'w+') as fout:
+    with open(os.path.join(dataset_dir, 'labels_train.jsonl'), 'a+') as fout:
         for sample in train_samples:
             fout.write(sample+'\n')
 
 
-    with open(os.path.join(dataset_dir, 'labels_test.jsonl'), 'w+') as fout:
+    with open(os.path.join(dataset_dir, 'labels_test.jsonl'), 'a+') as fout:
         for sample in test_samples:
             fout.write(sample+'\n')
 
 
 if __name__=='__main__':
-    to_dataset('20240803_6cc0.jsonl')
+    to_dataset('20240804_3787.jsonl')

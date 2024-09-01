@@ -21,10 +21,32 @@ Output: base
 Inputs: {input}
 Output: 
 '''
-ITEM_ANNO='''You will be presented with two anime-style images. The image on the left represents a {cp_name} component. When this component is applied to a portrait, the outcome is displayed in the image on the right. Your task is to provide a detailed description of the left image, focusing specifically on the {cp_name} component. This detailed description is intended to serve as a clear instruction for an artist to accurately replicate the {cp_name} component as seen in the left image. 
 
-### Description:
+ITEM_ADDITION='''You will be presented with two anime-style images. The image on the left represents a {cp_name} component. When this component is applied to a portrait, the outcome is displayed in the image on the right. Your task is to provide a detailed description of the left image, focusing specifically on the {cp_name} component. This detailed description is intended to serve as a clear instruction for an artist to accurately replicate the {cp_name} component as seen in the left image.
+'''
+ITEM_ADDITION_PART1='''You will be presented with two anime-style images. The following image represents a {cp_name} component denote as the first image:
+'''
+ITEM_ADDITION_PART2='''When this component is applied to a portrait, the outcome is displayed as the following, denoted as the second image. Your task is to provide a detailed description of the first image, focusing specifically on the {cp_name} component. This description is intended to serve as a clear instruction for an artist to accurately replicate the {cp_name} component as seen in the first image. The instruction should start with "Add a {cp_name} component ...". Don't mention the first image or instruction for artist in the instruction!
 '''
 
 
+ITEM_ANNO='''You will be presented with a pair of images that represent different layers within a PSD file. The image on the left shows the PSD project's appearance when all layers are visible. The image on the right depicts the rendering when only one specific layer is visible. Your task is to:
+1. Select a proper name for the specific layer from the provided list of valid names.
+2. Ensure that the chosen name accurately reflects the content and purpose of the layer.
+Valid Names: {names}
+'''
 
+ITEM_ANNO_PART1='''You will be shown images that represent the rendering results of a PSD file. If all layers are visible, the final image will appear as follows:
+'''
+ITEM_ANNO_PART2='''If we make only this layer visible, the final image will appear as follows. Your task is to:
+1. Select a proper name for the specific layer from the provided list of valid names.
+2. Ensure that the chosen name accurately reflects the content and purpose of the layer.
+Valid Names: {names}
+'''
+
+
+CATEGORY_ANNO='''Following are lay names of many different psd files. Because those files are created by different artist hence a same layer could end up with different names. I want you to merge similar layer names and give it a unique name in English. 
+
+Layer names:
+{names}
+'''

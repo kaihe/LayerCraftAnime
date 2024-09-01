@@ -22,5 +22,11 @@ def get_body_anno():
     cp = comps[0]
     print(f"\"{cp.cp_id}\":[{','.join([str(it.it_id) for it in cp.items])}]")
 
+def get_cp_id(pid, cp_name):
+    root = os.path.join(r'D:\picrew\data', pid)
+    maker = Maker(root)
+    comp = [c for c in maker.components if c.cp_name == cp_name]
+    print(comp[0].cp_id)
+
 if __name__ =='__main__':
-    get_body_anno()
+    get_cp_id('5090', '左手')

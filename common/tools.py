@@ -37,6 +37,34 @@ def grid_ims(ims, cols, to_rgb=False):
 
     return canvas
 
+def to_rgb(im):
+    _img = Image.new('RGB', (im.width, im.height), (255, 255, 255))
+    _img.paste(im, (0,0), mask=im.split()[3])
+    return _img
+
+def crop_to_non_white(pil_image):
+    # Convert the image to grayscale
+    grayscale_image = pil_image.convert("L")
+    
+    # Create a mask to identify non-white pixels
+    # Here, we consider pixels with a value less than 250 as non-white
+    # Adjust the threshold as needed
+    mask = grayscale_image.point(lambda x: 255 if x >= 250 else 0)
+    
+    # Invert the mask to get the non-white pixels
+    mask = mask.point(lambda x: 0 if x == 255 else 255)
+    
+    # Find the bounding box of the non-white pixels
+    bbox = mask.getbbox()
+    
+    # If the bounding box is found, crop the image
+    if bbox:
+        cropped_image = pil_image.crop(bbox)
+        return cropped_image
+    else:
+        # If no bounding box is found, return the original image
+        return pil_image
+
 def _group_file(cp_root):
     pid_grouped = defaultdict(list)
     for f in os.listdir(cp_root):
