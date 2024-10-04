@@ -6,7 +6,7 @@ import base64
 import requests
 import os
 from Maker import Maker
-from prompt import BODY_ANNO, ITEM_ANNO
+from prompts.legacy_prompt import BODY_ANNO, ITEM_ANNO
 from common.tools import grid_ims
 from io import BytesIO
 from config import FORMAL_NAMES
@@ -28,41 +28,24 @@ MODEL="gpt-4o-mini"
 # MODEL = 'gpt-4o-2024-08-06'
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY_IMAGE_EDITING"))
 
-def request_openai_json(prompt, ans_format, messages=None, image_input=None, batch=False, custom_id=''):
-    if messages is None:
-        # assemble message from prompt and image input
-        if image_input is not None:
-            # Getting the base64 string
-            if not isinstance(image_input, str):
-                base64_image = encode_image(image_input)
-            else:
-                base64_image = image_input
-
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": [
-                    {"type": "text", "text": prompt},
-                    {"type": "image_url", "image_url": {
-                        "url": f"data:image/png;base64,{base64_image}"}
-                    }
-                ]}
-            ]
-        else:
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": [
-                    {"type": "text", "text": prompt}
-                ]}
-            ]
-
+def request_openai_json(messages=None, ans_format=None, batch=False, custom_id=''):
     if not batch:
-        response = client.beta.chat.completions.parse(
-            model=MODEL,
-            messages = messages,
-            response_format=ans_format,
-        )
-        return response.choices[0].message.parsed
+        # make rquest directly if not batch and return the result
+        if ans_format is not None:
+            response = client.beta.chat.completions.parse(
+                model=MODEL,
+                messages = messages,
+                response_format=ans_format,
+            )
+            return response.choices[0].message.parsed
+        else:
+            response = client.chat.completions.create(
+                model=MODEL,
+                messages = messages
+            )
+            return response.choices[0].message.content
     else:
+        # only make the request body for batch requests
         _request = {
             "custom_id": custom_id,
             "method": "POST",

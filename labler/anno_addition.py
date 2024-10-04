@@ -3,33 +3,50 @@ from tqdm import tqdm
 import json, random
 import os
 from Maker import Maker
-from prompt import ITEM_ADDITION, ITEM_ADDITION_PART1, ITEM_ADDITION_PART2
+from prompts import make_addition_message
 from common.tools import grid_ims,to_rgb
 from config import FORMAL_NAMES
 import hashlib
 from labler.openai_func import encode_image, fetch_batch_result,do_batching, request_dir, result_dir,request_openai_json
 from pydantic import BaseModel
 import base64
-from PIL import Image
+from PIL import Image,ImageDraw, ImageFont
 import io
-
+import textwrap
 
 item_annos = json.load(open(r'D:\valuable_anno_data\picrew\item_anno.json'))
 comp_anno = json.load(open(r'D:\valuable_anno_data\picrew\anno.json'))
 
-def gen_comp_im(pid=None):
+def gen_comp_im(pid, pool):
+    if pool is None:
+        pool = ['cloth', 'eye', 'front', 'dec', 'mouth','back', 'eyebrow','ear']
+
     # pid = '1116402'
     root = os.path.join(r'D:\picrew\data', pid)
     base_dict = item_annos[pid]['base']
-
-    pool = ['cloth', 'eye', 'front', 'dec', 'mouth','back', 'eyebrow','ear']
-    # pool = ['front']
-    _cp_name = random.choice(pool)
-    target_cp = item_annos[pid].get(_cp_name, [])
-
-    if len(target_cp) == 0:
-        return None
     
+    def sample_comp():
+        # calculate weight by how many items in one component
+        weights = []
+        for _cp_name in pool:
+            cp_dict = item_annos[pid].get(_cp_name, {})
+            w = 0
+            for cp_id, item_ids in cp_dict.items():
+                w += len(item_ids)
+            weights.append(w)
+
+        # sample components by weight
+        _cp_name = random.choices(pool, weights=weights, k=1)[0]
+        return _cp_name
+
+    while True:
+        # get a valid component
+        _cp_name = sample_comp()
+        target_cp = item_annos[pid].get(_cp_name, [])
+
+        if len(target_cp) > 0:
+            break
+
     maker = Maker(root)
     for k,v in item_annos[pid].items(): 
         if k in pool:
@@ -71,10 +88,10 @@ class Instruction(BaseModel):
     Instruction: str
 
 
-def gpt_describe(pid, show=False):
-    data = gen_comp_im(pid)
-    prompt = ITEM_ADDITION.format(cp_name = data['component'])
-    ans = request_openai_json(prompt, ans_format=Instructions, image_input=data['im_grid'])
+def gpt_describe(pid, pool=None, show=False):
+    data = gen_comp_im(pid, pool)
+    messages = make_addition_message(data['component'], data['im_item'], data['im_all'])
+    ans = request_openai_json(messages=messages)
     data['description'] = ans
     if show:
         im_grid_base64 = data['im_grid']
@@ -83,6 +100,20 @@ def gpt_describe(pid, show=False):
         image_file = io.BytesIO(image_data)
         # Open the file-like object with PIL to get the image
         image = Image.open(image_file)
+
+        font = ImageFont.load_default()
+        draw = ImageDraw.Draw(image)
+
+        lines = ans.split('\n')
+        text_to_draw = []
+        chunk_size = 70
+        for line in lines:
+            chunks = textwrap.wrap(line, width=chunk_size)
+            text_to_draw.extend(chunks)
+                
+
+        draw.text((50, 50), text='\n'.join(text_to_draw), font=font, fill=(255, 0, 0))
+        print(ans)
         image.show()
     return data
 
@@ -119,29 +150,8 @@ def worker_batch(N = 500):
             continue
 
         task_name = hashlib.md5(data['im_grid'].encode('utf-8')).hexdigest()
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": [
-                {"type": "text", "text": ITEM_ADDITION_PART1.format(cp_name = data['component'])},
-                {
-                    "type": "image_url", 
-                    "image_url": {
-                        "url": f"data:image/png;base64,{data['im_item']}",
-                        "detail": "low"
-                    }
-                },
-                {"type": "text", "text": ITEM_ADDITION_PART2.format(cp_name = data['component'])},
-                {
-                    "type": "image_url", 
-                    "image_url": {
-                        "url": f"data:image/png;base64,{data['im_all']}",
-                        "detail": "low"
-                    }
-                }
-            ]}
-        ]
-
-        _request = request_openai_json(prompt='', messages=messages, ans_format=Instruction, image_input='', batch=True, custom_id=task_name)
+        messages = make_addition_message(data['component'], data['im_item'], data['im_all'])
+        _request = request_openai_json(prompt='', messages=messages, image_input='', batch=True, custom_id=task_name)
 
         data['task_id'] = task_name
         data.pop('im_item')
@@ -169,9 +179,9 @@ def worker_batch(N = 500):
 
 if __name__ == '__main__':
     # worker_batch(N=10)
-    fetch_batch_result('20240901_f3e6.jsonl')
+    # fetch_batch_result('20240901_f3e6.jsonl')
 
-    # data = gpt_describe('241678', show=True)
+    data = gpt_describe('100315', pool=['front'], show=True)
     # print(data['description'])
 
     

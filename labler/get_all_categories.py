@@ -7,7 +7,7 @@ from tqdm import tqdm
 import json, random
 import os
 from Maker import Maker
-from prompt import CATEGORY_ANNO
+from prompts.legacy_prompt import CATEGORY_ANNO
 from common.tools import grid_ims
 import hashlib
 from labler.openai_func import encode_image, fetch_batch_result,do_batching, request_dir, result_dir,request_openai_json

@@ -3,7 +3,7 @@ from tqdm import tqdm
 import json, random
 import os
 from Maker import Maker
-from prompt import BODY_ANNO, ITEM_ANNO
+from prompts.legacy_prompt import BODY_ANNO, ITEM_ANNO
 from common.tools import grid_ims
 from io import BytesIO
 from config import FORMAL_NAMES
