@@ -29,42 +29,15 @@ The Visual Narrator (Anime Component Specialist) is a specialized role focused o
 2. **Component Identification:** The specialist will also be provided with the component name to facilitate focused analysis. Notice that in the final rendered image, other components are more transparent to contrast the target component.
 
 ### Output Format
-1. **Instruction Format:** Format the output as a clear instruction, structured as follows:
-   ```
-   "Add an [component name] with the following details:
-   - Outlooking: [describe the overall appearance]
-   - Color: [describe the color]
-   - Style: [describe the texture and painting style]
-   - Position: [describe the position if relevant]
-   - Additional Features: [detailed aspects specific to the component type]"
-   ```
-
-#### Additional Features
 1. **For Hair Component:**
-    ```
-    - Hair Texture: Describe the texture, whether it's smooth, wavy, curly, or frizzy.
-    - Hair Length: Specify the length, whether it's short, medium, long, or extra-long.
-    - Hair Color: Detail the color scheme, including any gradients, highlights, or lowlights.
-    - Hair Style: Describe the overall style, such as straight, braided, tied, or loose.
-    - Hair Accessories: Mention any hair accessories, such as ribbons, clips, or headbands.
-    - Hair Movement: Note any dynamic elements, such as windblown strands or hair in motion.
-    - Hair Shape: Note the size and shape of the hair.
-    - Which Hair: There could be multiple hair components such as:
-        - Bangs: The front part of the hair that falls over the forehead.
-        - Forelocks: The strands of hair at the front, framing the face.
-        - Back Hair: The main section of hair that falls down the back.
-        - Bun: A bun-style, where the hair is tied up into a circular shape on top or at the back of the head.
-        - Antenna Hair: Strands of hair that stick out, often styled to look like insect antennae.
-        - Ahoge: A small, often single strand of hair that stands upright, giving a quirky or carefree look.
-        - Ponytail: Hair tied together and pulled back, usually at the top or middle of the head.
-        - Twin-tails (Pigtails): Hair tied into two sections on either side of the head.
-        - Side Hair: Strands of hair that fall over the sides, often longer and framing the face.
-        - Long Hair: The overall length of the hair, especially referring to extended locks down the back.
-        - Short Hair: Shorter hairstyles, often associated with pixie or bob cuts.
-        - Braids: Braided hair, often styled in multiple forms like a single braid or twin braids.
-        - Side Ponytail: A ponytail that is tied to one side of the head.
-        - Sideburn Hair: Hair on the sides that often frames the cheeks, connecting to the front or bangs.
-    ```
+Analyze the hair style of the character in the provided image and describe it in detail, including the following aspects, begin with "Add a hair component with the following description"
+1. **Style**: Describe the overall appearance of the hairstyle (e.g., neat, messy, wavy, spiky).
+2. **Shape**: Explain the shape of the hair (e.g., long, short, layered, voluminous) and how it fits on the head (e.g., close to the scalp, asymmetrical, standing up, etc.).
+3. **Texture**: Indicate how the hair texture appears (e.g., smooth, wavy, curly, frizzy).
+4. **Color**: Mention the hair color and any noticeable highlights or color variations, even if simple or minimalistic
+5. **Volume**: Comment on the fullness or volume of the hair (e.g., flat, fluffy, voluminous, sleek).
+6. **Additional Features**: Note any distinct details, like bangs, hair that frames the face, or side locks. Specify if there’s an asymmetrical style, where one side is longer than the other, or if it’s tied in any way.
+
 2. **For Mouth Component:**
     ```
     - Facial Expression: Focus on the specific expression, such as smiling, frowning, pouting, or neutral.

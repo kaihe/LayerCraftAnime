@@ -181,7 +181,7 @@ if __name__ == '__main__':
     # worker_batch(N=10)
     # fetch_batch_result('20240901_f3e6.jsonl')
 
-    data = gpt_describe('100315', pool=['front'], show=True)
+    data = gpt_describe('1133707', pool=['eye'], show=True)
     # print(data['description'])
 
     

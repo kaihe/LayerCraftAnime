@@ -43,6 +43,7 @@ def request_openai_json(messages=None, ans_format=None, batch=False, custom_id='
                 model=MODEL,
                 messages = messages
             )
+            print(response.usage)
             return response.choices[0].message.content
     else:
         # only make the request body for batch requests
